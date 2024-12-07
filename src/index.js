@@ -88,7 +88,7 @@ MMMMMMMMb.         d8MM8tt8MM
   <p>Welcome to the Ethereum bluesky DID manager. This service allows you to authenticate with bluesky using an ENS address.</p>
   <p>This service will resolve your ENS domain to an address (if it exists). Then it will ask for a signature from you (no transaction) to prove ownership of the domain.</p>
 
-  <p>Let's get started!</p>
+  <p>Let's get started! [<a href="https://github.com/chancehudson/ens-zketh" target="_blank">source</a>]</p>
 
   <button onclick="start_signin()" id="signin_button">I have a bluesky account</button>
   <button onclick="start_signup()" id="signup_button">I DON'T have a bluesky account</button>

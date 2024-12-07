@@ -11,12 +11,12 @@
   "description": "",
   "dependencies": {
     "@metamask/eth-sig-util": "^8.1.1",
-    "dotenv": "^16.4.7",
     "ethers": "^6.13.4",
-    "express": "^4.21.2",
     "express-flare": "^1.4.27"
   },
   "devDependencies": {
+    "express": "^4.21.2",
+    "dotenv": "^16.4.7",
     "buffer": "^6.0.3",
     "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4"
