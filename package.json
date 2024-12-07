@@ -1,0 +1,17 @@
+{
+  "name": "ens-zketh",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "Apache-2.0 OR MIT",
+  "description": "",
+  "dependencies": {
+    "@metamask/eth-sig-util": "^8.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "web3": "^4.16.0"
+  }
+}
