@@ -1,8 +1,10 @@
 const express = require("express");
+const { router, handleRequest } = require("express-flare");
 const port = process.env.PORT || 3000;
 require("dotenv").config();
 
-const app = express();
+// const app = express();
+const app = router();
 
 const RPC_URL = process.env.RPC_URL;
 if (!RPC_URL) {
@@ -29,10 +31,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// // Start the server
+// app.listen(port, () => {
+//   console.log(`Server running on port ${port}`);
+// });
 
 async function eth_rpc_req(method, params) {
   const response = await fetch(RPC_URL, {
@@ -54,3 +56,12 @@ async function eth_rpc_req(method, params) {
   }
   return data.result;
 }
+
+addEventListener("fetch", (event) => {
+  event.respondWith(
+    handleRequest({
+      event,
+      router: app,
+    }),
+  );
+});
