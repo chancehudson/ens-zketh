@@ -10,9 +10,9 @@ const types = {
   DID: [{ name: "identifier", type: "string" }],
 };
 
-module.exports = (app, { ADDR_DID_MAP, RPC_URL, chainId }) => {
+module.exports = (app, { LOCAL, ADDR_DID_MAP, RPC_URL, chainId }) => {
   app.get("/set_did", async (req, res) => {
-    const { did, signature } = req.query;
+    const { did, signature, ens_name } = req.query;
     const addr = recoverTypedSignature({
       data: {
         types,
@@ -24,7 +24,16 @@ module.exports = (app, { ADDR_DID_MAP, RPC_URL, chainId }) => {
       version: "V4",
     });
     // update the address map
-    ADDR_DID_MAP[addr] = did;
-    res.end(`recovered address ${addr} from signature for ${did}`);
+    if (LOCAL) {
+      ADDR_DID_MAP[addr] = did;
+    } else {
+      await eth_bsky.put(addr, did);
+      const value = await eth_bsky.get(addr);
+      if (value === null) {
+        res.status(404).end();
+        return;
+      }
+    }
+    res.status(200).end();
   });
 };

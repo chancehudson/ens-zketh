@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -11,8 +12,13 @@
   "dependencies": {
     "@metamask/eth-sig-util": "^8.1.1",
     "dotenv": "^16.4.7",
+    "ethers": "^6.13.4",
     "express": "^4.21.2",
-    "express-flare": "^1.4.27",
-    "web3": "^4.16.0"
+    "express-flare": "^1.4.27"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^5.1.4"
   }
 }
