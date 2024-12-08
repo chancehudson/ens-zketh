@@ -1,6 +1,7 @@
 module.exports = (app, { eth_rpc_req, resolve_ens }) => {
   // Route handler for .well-known/atproto-did
   app.get("/resolve_ens", async (req, res) => {
+    res.setHeader("access-control-allow-origin", "*");
     const { ens_name } = req.query;
     try {
       // Return the extracted subdomain

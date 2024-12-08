@@ -1,6 +1,7 @@
 module.exports = (app, { LOCAL, ADDR_DID_MAP, resolve_ens }) => {
   // Route handler for .well-known/atproto-did
   app.get("/.well-known/atproto-did", async (req, res) => {
+    res.setHeader("access-control-allow-origin", "*");
     try {
       const url = new URL(req.url);
       if (

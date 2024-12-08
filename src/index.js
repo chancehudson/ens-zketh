@@ -1,13 +1,44 @@
+const domains = [
+  "eth-bsky.app",
+  "eth.band",
+  "eth.br.com",
+  "eth.cn.com",
+  "eth.co.bz",
+  "eth.com.im",
+  "eth.furniture",
+  "eth.gr.com",
+  "eth.hu.net",
+  "eth.net.im",
+  "eth.net.pe",
+  "eth.net.ph",
+  "eth.net.vc",
+  "eth.org.im",
+  "eth.org.mx",
+  "eth.org.pe",
+  "eth.org.ph",
+  "eth.org.vc",
+];
+
 module.exports = (app, { LOCAL, ADDR_DID_MAP, URL: _URL, resolve_ens }) => {
   app.get("/", async (req, res) => {
     res.setHeader("access-control-allow-origin", "*");
     res.setHeader("content-type", "text/html");
-    const url = new URL(req.url);
-    if (
-      url.hostname.split(".").length === 3 &&
-      url.hostname.indexOf("eth-bsky.app") !== -1
-    ) {
-      const ens_name = url.hostname.split(".")[0] + ".eth";
+    const url = new URL(
+      LOCAL
+        ? req.protocol + "://" + req.get("host") + req.originalUrl
+        : req.url,
+    );
+
+    let ens_name;
+    for (const d of domains) {
+      if (url.hostname.indexOf(d) === -1) continue;
+      const remaining = url.hostname.replace(d, "");
+      if (/^[a-zA-Z0-9]+\.$/.test(remaining)) {
+        ens_name = remaining + "eth";
+        break;
+      }
+    }
+    if (ens_name) {
       const { resolved_addr } = await resolve_ens(ens_name);
       if (!resolved_addr) {
         res.end(`
@@ -37,9 +68,17 @@ module.exports = (app, { LOCAL, ADDR_DID_MAP, URL: _URL, resolve_ens }) => {
   </head>
   <body>
   <p>This is the bluesky DID page for <span style="font-weight: bold">${ens_name}</span>.</p>
-  <p>This handle can be used as <span style="font-weight: bold">@${ens_name.split(".")[0]}.eth-bsky.app</span>.</p>
-  <p>This ens name is associated with <span style="font-weight: bold">${existing}</span></p>
-  <p>To use this in bluesky go to Settings -> Account -> Handle -> I have my own domain -> No DNS Panel -> Verify Text File and enter ${ens_name.split(".")[0]}.eth-bsky.app</p>
+  <p>This ENS address is associated with <span style="font-weight: bold">${existing}</span></p>
+  <div style="display: flex; flex-direction: row; align-items: center">
+    <span style="margin-right: 4px">Valid handles: </span>
+    <select id="domains" name="domains" style="margin-right: 4px">
+      ${domains.map((d) => `<option value="${ens_name}${d.slice(3)}">${ens_name}${d.slice(3)}</option>`).join("")}
+    </select>
+    <button onclick="navigator.clipboard.writeText(document.getElementById('domains').value)">Copy</button>
+  </div>
+  <p>
+    To use this in bluesky go to Settings -> Account -> Handle -> I have my own domain -> No DNS Panel -> Verify Text File and enter any of the above handles.
+  </p>
   </body>
   </html>
           `);
@@ -52,8 +91,7 @@ module.exports = (app, { LOCAL, ADDR_DID_MAP, URL: _URL, resolve_ens }) => {
 </head>
 <body>
 <p>This is the bluesky DID page for <span style="font-weight: bold">${ens_name}</span>.</p>
-<p>This handle can be used as <span style="font-weight: bold">@${ens_name.split(".")[0]}.eth-bsky.app</span>.</p>
-<p>This ens name is not associated with a bluesky DID.</p>
+<p>This ens name is not currently associated with a bluesky DID.</p>
 </body>
 </html>
         `);
@@ -81,14 +119,15 @@ MMMMMMMMb.         d8MM8tt8MM
      dM88ttt8EM8"MMM888ttt8MM
      MM8ttt88MM" " "MMNICKMM"
      3M88888MM"      "MMMP"
-      "MNICKM"
+      "MNICKM"                [<a href="https://github.com/chancehudson/ens-zketh" target="_blank">source</a>]
 </pre>
+
 </div>
 <div id="start_content">
   <p>Welcome to the Ethereum bluesky DID manager. This service allows you to authenticate with bluesky using an ENS address.</p>
   <p>This service will resolve your ENS domain to an address (if it exists). Then it will ask for a signature from you (no transaction) to prove ownership of the domain.</p>
 
-  <p>Let's get started! [<a href="https://github.com/chancehudson/ens-zketh" target="_blank">source</a>]</p>
+  <p>Let's get started!</p>
 
   <button onclick="start_signin()" id="signin_button">I have a bluesky account</button>
   <button onclick="start_signup()" id="signup_button">I DON'T have a bluesky account</button>

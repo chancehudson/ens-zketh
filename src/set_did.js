@@ -12,6 +12,7 @@ const types = {
 
 module.exports = (app, { LOCAL, ADDR_DID_MAP, RPC_URL, chainId }) => {
   app.get("/set_did", async (req, res) => {
+    res.setHeader("access-control-allow-origin", "*");
     const { did, signature, ens_name } = req.query;
     const addr = recoverTypedSignature({
       data: {
